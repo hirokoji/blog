@@ -1,118 +1,104 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-declare const global: {HermesInternal: null | {}};
-
 const App = () => {
+  const [bookCard, setBookCard] = useState<BookCard>({
+    id: 0,
+    title: '',
+    author: '',
+  });
+
+  useEffect(() => {
+    // 起動時にREST Serverに格納されたデータをカードに反映する
+    const updateCard = async (): Promise<void> => {
+      const targetBook = await getDataFromServer();
+      if (targetBook) {
+        setBookCard({
+          id: targetBook.id,
+          title: targetBook.title,
+          author: targetBook.author,
+        });
+      }
+    };
+    updateCard();
+  }, []);
+
+  const styles = StyleSheet.create({
+    cardPostion: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+    },
+  });
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
+        <View style={styles.cardPostion}>
+          <Card
+            id={bookCard.id}
+            title={bookCard.title}
+            author={bookCard.author}
+          />
+        </View>
       </SafeAreaView>
     </>
   );
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+type BookCard = {
+  id: number;
+  title: string;
+  author: string;
+};
+
+const Card: React.FC<BookCard> = ({title, author}) => {
+  const styles = StyleSheet.create({
+    container: {
+      width: '80%',
+      height: '10%',
+      borderWidth: 1,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    titleText: {
+      fontSize: 20,
+    },
+    authorText: {
+      fontSize: 15,
+    },
+  });
+  return (
+    <TouchableOpacity style={styles.container}>
+      <Text style={styles.titleText}> {title} </Text>
+      <Text style={styles.authorText}> by {author} </Text>
+    </TouchableOpacity>
+  );
+};
+
+/** ここからはREST Server Clientロジック **/
+
+import axios from 'axios';
+const request = axios.create({
+  baseURL: 'http://localhost:3000',
+  responseType: 'json',
 });
+// REST Serverからデータを取得する関数
+const getDataFromServer = async (): Promise<BookCard | undefined> => {
+  const res = await request.get('/posts');
+  if (res.data) {
+    return res.data[0] as BookCard;
+  }
+  return undefined;
+};
 
 export default App;
