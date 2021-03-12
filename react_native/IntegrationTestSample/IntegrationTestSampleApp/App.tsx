@@ -6,6 +6,7 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 
 const App = () => {
@@ -16,6 +17,17 @@ const App = () => {
   });
 
   useEffect(() => {
+    // Deep Linkの設定
+    const setDeepLinkHandler = () => {
+      const handleOpenURL = (event) => {
+        const route = event.url.replace(/.*?:\/\//g, '');
+        console.log(route);
+        // TODO: Add routing logic
+      };
+      Linking.addEventListener('url', handleOpenURL);
+    };
+    setDeepLinkHandler();
+
     // 起動時にREST Serverに格納されたデータをカードに反映する
     const updateCard = async (): Promise<void> => {
       const targetBook = await getDataFromServer();

@@ -8,6 +8,13 @@ beforeAll(async () => {
 });
 
 describe('Card Component', () => {
+  beforeAll(async () => {
+    // Open the target page
+    await driver.execute('mobile:deepLink', {
+      url: 'integration-test-sample://page1',
+      package: 'com.integrationtestsample',
+    });
+  });
   test('title should be json_server ', async () => {
     // given
     expect(await driver.hasElementByAccessibilityId('App')).toBe(true);
