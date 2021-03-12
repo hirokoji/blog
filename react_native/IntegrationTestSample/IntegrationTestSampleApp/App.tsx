@@ -39,7 +39,7 @@ const App = () => {
   });
 
   return (
-    <>
+    <View accessibilityLabel="App">
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <View style={styles.cardPostion}>
@@ -50,7 +50,7 @@ const App = () => {
           />
         </View>
       </SafeAreaView>
-    </>
+    </View>
   );
 };
 
@@ -88,8 +88,9 @@ const Card: React.FC<BookCard> = ({title, author}) => {
 /** ここからはREST Server Clientロジック **/
 
 import axios from 'axios';
+const privateIP = '192.168.11.9';
 const request = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: `http://${privateIP}:3000`,
   responseType: 'json',
 });
 // REST Serverからデータを取得する関数
