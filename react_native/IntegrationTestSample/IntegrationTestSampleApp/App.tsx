@@ -78,9 +78,13 @@ const Card: React.FC<BookCard> = ({title, author}) => {
     },
   });
   return (
-    <TouchableOpacity style={styles.container}>
-      <Text style={styles.titleText}> {title} </Text>
-      <Text style={styles.authorText}> by {author} </Text>
+    <TouchableOpacity style={styles.container} accessibilityLabel="card">
+      <Text style={styles.titleText} accessibilityLabel="card_title">
+        {title}
+      </Text>
+      <Text style={styles.authorText} accessibilityLabel="card_author">
+        by {author}
+      </Text>
     </TouchableOpacity>
   );
 };
