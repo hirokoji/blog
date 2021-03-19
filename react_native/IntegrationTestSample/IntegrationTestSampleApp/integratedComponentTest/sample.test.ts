@@ -10,27 +10,19 @@ beforeAll(async () => {
 describe('Integrated Component Test', () => {
   describe('Card Component', () => {
     beforeAll(async () => {
-      // Open the target page
-      await driver.execute('mobile:deepLink', {
-        url: 'integration-test-sample://page1',
-        package: 'com.integrationtestsample',
-      });
+      // Given: card component is available
+      expect(await driver.hasElementByAccessibilityId('card')).toBe(true);
     });
-    test('title should be json_server ', async () => {
-      // given
-      expect(await driver.hasElementByAccessibilityId('App')).toBe(true);
 
-      // then
+    test('title should be json_server ', async () => {
+      // Then
       expect(await driver.elementByAccessibilityId('card_title').text()).toBe(
         'json-server',
       );
     });
 
     test('author should be typicode', async () => {
-      // given
-      expect(await driver.hasElementByAccessibilityId('App')).toBe(true);
-
-      // then
+      // Then
       expect(await driver.elementByAccessibilityId('card_author').text()).toBe(
         'by typicode',
       );
