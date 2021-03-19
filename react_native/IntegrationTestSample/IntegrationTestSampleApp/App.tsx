@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     // Deep Linkの設定
     const setDeepLinkHandler = () => {
-      const handleOpenURL = (event) => {
+      const handleOpenURL = (event: {url: string}) => {
         const route = event.url.replace(/.*?:\/\//g, '');
         console.log(route);
         // TODO: Add routing logic
@@ -104,7 +104,7 @@ const Card: React.FC<BookCard> = ({title, author}) => {
 /** ここからはREST Server Clientロジック **/
 
 import axios from 'axios';
-const privateIP = '192.168.11.9';
+const privateIP = '192.168.11.3';
 const request = axios.create({
   baseURL: `http://${privateIP}:3000`,
   responseType: 'json',
